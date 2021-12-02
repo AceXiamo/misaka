@@ -1,0 +1,48 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connectionTimeout: 300000
+      idleTimeout: 120000
+      leakDetectionThreshold: 300000
+      maximumPoolSize: 10
+      minimumIdle: 2
+    min-evictable-idle-time-millis: 1800000
+    password: 147526
+    test-while-idle: true
+    time-between-eviction-runs-millis: 30000
+    url: jdbc:mysql://localhost:3306/tree?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&allowMultiQueries=true
+    username: root
+  # redis
+  redis:
+    database: 15
+    host: 127.0.0.1
+    jedis:
+      pool:
+        max-active: 50
+        max-idle: 20
+        max-wait: 3000
+        min-idle: 2
+    port: 6379
+    timeout: 5000
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+mybatis:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/**.*
+# 运行端口
+server:
+  port: 8030
+
+misaka:
+  bot-id:
+  bot-token:
+  bot-secret:
