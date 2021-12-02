@@ -4,7 +4,7 @@
 
 这是一个QQ频道的官方Bot，原本是不想写的，但是空闲时间太长了，于是就开始了这个项目...
 
-该项目使用的是Spring Boot，集成了Redis、RabbitMQ.
+该项目使用的是Spring Boot，集成了Redis和RabbitMQ.
 
 也是为代码的可复用性以及便于维护，所以一开始就采用了分模块的方式，把Bot相关的逻辑和其功能进行了细分.
 
@@ -12,7 +12,7 @@
 
 
 ### 已完成
-- Bilibili连载番剧                  @Bot 连载中
+- Bilibili连载番剧 @Bot 连载中
 
 
 
