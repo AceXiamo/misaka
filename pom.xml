@@ -13,7 +13,6 @@
         <module>misaka-start</module>
         <module>misaka-core</module>
         <module>misaka-plugins</module>
-        <module>bilibili-anime-timeline</module>
     </modules>
 
     <parent>

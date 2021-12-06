@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.misaka.dao.MkUserDao">
+
+    <resultMap type="com.misaka.entity.MkUser" id="MkUserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="userNick" column="user_nick" jdbcType="VARCHAR"/>
+        <result property="userAvatar" column="user_avatar" jdbcType="VARCHAR"/>
+        <result property="firstAtTime" column="first_at_time" jdbcType="TIMESTAMP"/>
+        <result property="firstAtGuildId" column="first_at_guild_id" jdbcType="VARCHAR"/>
+        <result property="firstAtChannelId" column="first_at_channel_id" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="MkUserMap">
+        select
+        id, user_id, user_nick, user_avatar, first_at_time, first_at_guild_id, first_at_channel_id, create_time
+        from misaka.mk_user
+        where id = #{id}
+    </select>
+
+    <!--查询单个，根据频道返回的用户id查询-->
+    <select id="queryByUserId" resultMap="MkUserMap">
+        select
+        id, user_id, user_nick, user_avatar, first_at_time, first_at_guild_id, first_at_channel_id, create_time
+        from misaka.mk_user
+        where user_id = #{userId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="MkUserMap">
+        select
+        id, user_id, user_nick, user_avatar, first_at_time, first_at_guild_id, first_at_channel_id, create_time
+        from misaka.mk_user
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="MkUserMap">
+        select
+        id, user_id, user_nick, user_avatar, first_at_time, first_at_guild_id, first_at_channel_id, create_time
+        from misaka.mk_user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="userNick != null and userNick != ''">
+                and user_nick = #{userNick}
+            </if>
+            <if test="userAvatar != null and userAvatar != ''">
+                and user_avatar = #{userAvatar}
+            </if>
+            <if test="firstAtTime != null">
+                and first_at_time = #{firstAtTime}
+            </if>
+            <if test="firstAtGuildId != null">
+                and first_at_guild_id = #{firstAtGuildId}
+            </if>
+            <if test="firstAtChannelId != null">
+                and first_at_channel_id = #{firstAtChannelId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into misaka.mk_user(user_id, user_nick, user_avatar, first_at_time, first_at_guild_id,
+        first_at_channel_id, create_time)
+        values (#{userId}, #{userNick}, #{userAvatar}, #{firstAtTime}, #{firstAtGuildId}, #{firstAtChannelId},
+        now())
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into misaka.mk_user(user_id, user_nick, user_avatar, first_at_time, first_at_guild_id,
+        first_at_channel_id, create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userId}, #{entity.userNick}, #{entity.userAvatar}, #{entity.firstAtTime},
+            #{entity.firstAtGuildId}, #{entity.firstAtChannelId}, now())
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into misaka.mk_user(user_id, user_nick, user_avatar, first_at_time, first_at_guild_id,
+        first_at_channel_id, create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userId}, #{entity.userNick}, #{entity.userAvatar}, #{entity.firstAtTime},
+            #{entity.firstAtGuildId}, #{entity.firstAtChannelId}, now())
+        </foreach>
+        on duplicate key update
+        user_id = values(user_id) , user_nick = values(user_nick) , user_avatar = values(user_avatar) , first_at_time =
+        values(first_at_time) , first_at_guild_id = values(first_at_guild_id) , first_at_channel_id =
+        values(first_at_channel_id)
+    </insert>
+
+    <insert id="insertOrUpdate" keyProperty="id" useGeneratedKeys="true">
+        insert into misaka.mk_user(user_id, user_nick, user_avatar, first_at_time, first_at_guild_id,
+        first_at_channel_id, create_time)
+        values (#{userId}, #{userNick}, #{userAvatar}, now(), #{firstAtGuildId}, #{firstAtChannelId},
+        now())
+        on duplicate key update
+        user_nick = values(user_nick) , user_avatar = values(user_avatar)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update misaka.mk_user
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="userNick != null and userNick != ''">
+                user_nick = #{userNick},
+            </if>
+            <if test="userAvatar != null and userAvatar != ''">
+                user_avatar = #{userAvatar},
+            </if>
+            <if test="firstAtTime != null">
+                first_at_time = #{firstAtTime},
+            </if>
+            <if test="firstAtGuildId != null">
+                first_at_guild_id = #{firstAtGuildId},
+            </if>
+            <if test="firstAtChannelId != null">
+                first_at_channel_id = #{firstAtChannelId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from misaka.mk_user where id = #{id}
+    </delete>
+
+</mapper>

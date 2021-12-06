@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.misaka.dao.WeatherHisDao">
+
+    <resultMap type="com.misaka.entity.WeatherHis" id="WeatherHisMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="time" column="time" jdbcType="TIMESTAMP"/>
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="msgId" column="msg_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="WeatherHisMap">
+        select
+          id, city, time, user_id, msg_id
+        from misaka.weather_his
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="WeatherHisMap">
+        select
+          id, city, time, user_id, msg_id
+        from misaka.weather_his
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="WeatherHisMap">
+        select
+        id, city, time, user_id, msg_id
+        from misaka.weather_his
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="time != null">
+                and time = #{time}
+            </if>
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId}
+            </if>
+            <if test="msgId != null and msgId != ''">
+                and msg_id = #{msgId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into misaka.weather_his(id, city, `time`, user_id, msg_id)
+        values (#{id}, #{city}, now(), #{userId}, #{msgId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into misaka.weather_his(city, time, user_id, msg_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.city}, now(), #{entity.userId}, #{entity.msgId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into misaka.weather_his(city, time, user_id, msg_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.city}, #{entity.time}, #{entity.userId}, #{entity.msgId})
+        </foreach>
+        on duplicate key update
+        city = values(city) , time = values(time) , user_id = values(user_id) , msg_id = values(msg_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update misaka.weather_his
+        <set>
+            <if test="city != null and city != ''">
+                city = #{city},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="userId != null and userId != ''">
+                user_id = #{userId},
+            </if>
+            <if test="msgId != null and msgId != ''">
+                msg_id = #{msgId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from misaka.weather_his where id = #{id}
+    </delete>
+
+</mapper>

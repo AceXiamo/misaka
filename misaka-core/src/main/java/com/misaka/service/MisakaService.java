@@ -1,18 +1,11 @@
 package com.misaka.service;
 
-import com.bili.anime.entity.AnimeData;
-import com.bili.anime.service.AnimeTimeLineService;
 import com.misaka.config.BotApi;
 import com.misaka.config.MisakaConfiguration;
 import com.misaka.utils.MisakaHttpUtils;
-import com.misaka.utils.MqUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * The type Misaka service.

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.misaka.dao.MkMessageDao">
+
+    <resultMap type="com.misaka.entity.MkMessage" id="MkMessageMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="msgBogy" column="msg_bogy" jdbcType="VARCHAR"/>
+        <result property="msgContent" column="msg_content" jdbcType="VARCHAR"/>
+        <result property="guildId" column="guild_id" jdbcType="VARCHAR"/>
+        <result property="channelId" column="channel_id" jdbcType="VARCHAR"/>
+        <result property="msgId" column="msg_id" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="MkMessageMap">
+        select
+        id, msg_bogy, msg_content, guild_id, channel_id, msg_id, create_time
+        from misaka.mk_message
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="MkMessageMap">
+        select
+        id, msg_bogy, msg_content, guild_id, channel_id, msg_id, create_time
+        from misaka.mk_message
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="MkMessageMap">
+        select
+        id, msg_bogy, msg_content, guild_id, channel_id, msg_id, create_time
+        from misaka.mk_message
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="msgBogy != null and msgBogy != ''">
+                and msg_bogy = #{msgBogy}
+            </if>
+            <if test="msgContent != null and msgContent != ''">
+                and msg_content = #{msgContent}
+            </if>
+            <if test="guildId != null">
+                and guild_id = #{guildId}
+            </if>
+            <if test="channelId != null">
+                and channel_id = #{channelId}
+            </if>
+            <if test="msgId != null and msgId != ''">
+                and msg_id = #{msgId}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into misaka.mk_message(msg_bogy, msg_content, guild_id, channel_id, msg_id, create_time)
+        values (#{msgBogy}, #{msgContent}, #{guildId}, #{channelId}, #{msgId}, now())
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into misaka.mk_message(msg_bogy, msg_content, guild_id, channel_id, msg_id, create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.msgBogy}, #{entity.msgContent}, #{entity.guildId}, #{entity.channelId}, #{entity.msgId},
+            now())
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into misaka.mk_message(msg_bogy, msg_content, guild_id, channel_id, msg_id, create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.msgBogy}, #{entity.msgContent}, #{entity.guildId}, #{entity.channelId}, #{entity.msgId},
+            now())
+        </foreach>
+        on duplicate key update
+        msg_bogy = values(msg_bogy) , msg_content = values(msg_content) , guild_id = values(guild_id) , channel_id =
+        values(channel_id) , msg_id = values(msg_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update misaka.mk_message
+        <set>
+            <if test="msgBogy != null and msgBogy != ''">
+                msg_bogy = #{msgBogy},
+            </if>
+            <if test="msgContent != null and msgContent != ''">
+                msg_content = #{msgContent},
+            </if>
+            <if test="guildId != null">
+                guild_id = #{guildId},
+            </if>
+            <if test="channelId != null">
+                channel_id = #{channelId},
+            </if>
+            <if test="msgId != null and msgId != ''">
+                msg_id = #{msgId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from misaka.mk_message where id = #{id}
+    </delete>
+
+</mapper>
